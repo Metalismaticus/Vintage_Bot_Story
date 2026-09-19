@@ -28,3 +28,6 @@ TestServer/Backups/
 TestServer/BackupSaves/
 TestServer/Cache/
 TestServer/Logs/
+
+# Личный файл хозяина в корне — не исходник и не документ проекта
+/Документ Microsoft Word.docx

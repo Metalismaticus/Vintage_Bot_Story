@@ -8,7 +8,7 @@ does nothing a live player could not do.
 - **How to run, configure and control it — [GUIDE.md](GUIDE.md)** (English) ·
   [ЗАПУСК.md](ЗАПУСК.md) (Russian original, more detail).
 - Connecting a language model, or handing the bot's body to an external model
-  over MCP — [ИИ.md](ИИ.md) (Russian).
+  over MCP — [AI.md](AI.md) (English) · [ИИ.md](ИИ.md) (Russian).
 - Ready-made bots — the `presets/` folder: survivor (`digger`, `quarry-only`,
   `resident`), trader (`trader`), guard (`guard`), AI trader (`ai`).
 
@@ -53,5 +53,6 @@ granted by the license.
 ---
 
 По-русски: запуск и настройка — [ЗАПУСК.md](ЗАПУСК.md); нейросеть и MCP —
-[ИИ.md](ИИ.md). Код бесплатен для личного некоммерческого использования; любое
-коммерческое — только по письменному соглашению с автором.
+[ИИ.md](ИИ.md). По-английски: [GUIDE.md](GUIDE.md), [AI.md](AI.md). Код
+бесплатен для личного некоммерческого использования; любое коммерческое —
+только по письменному соглашению с автором.
