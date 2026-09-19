@@ -1,0 +1,84 @@
+<Project>
+
+  <!--
+    ГДЕ СТОИТ ИГРА — один ответ на все проекты сразу.
+
+    Раньше путь был выписан в каждом csproj строкой «$(APPDATA)\Vintagestory».
+    На Windows это работает, а на Linux и macOS переменной APPDATA нет вовсе:
+    MSBuild подставлял пустоту, ссылка превращалась в «\VintagestoryAPI.dll»,
+    и сборка падала сотнями ошибок «тип не найден» — причём ни одна из них не
+    говорила про настоящую причину. Отсюда правило: путь считается ОДИН раз и
+    в одном месте, а если игры нет — об этом говорится прямо (см. цель ниже).
+
+    Порядок поиска:
+      1. свойство сборки:  dotnet build -p:VintageStoryPath=/куда/угодно
+      2. переменная VINTAGE_STORY — её же просит вики модостроения игры
+      3. обычные места установки на каждой из трёх систем
+  -->
+
+  <PropertyGroup Condition="'$(VintageStoryPath)' == '' and '$(VINTAGE_STORY)' != ''">
+    <VintageStoryPath>$(VINTAGE_STORY)</VintageStoryPath>
+  </PropertyGroup>
+
+  <!-- Windows -->
+  <PropertyGroup Condition="'$(VintageStoryPath)' == '' and '$(APPDATA)' != '' and Exists('$(APPDATA)/Vintagestory/VintagestoryAPI.dll')">
+    <VintageStoryPath>$(APPDATA)/Vintagestory</VintageStoryPath>
+  </PropertyGroup>
+
+  <!-- Linux: обычная установка -->
+  <PropertyGroup Condition="'$(VintageStoryPath)' == '' and '$(HOME)' != '' and Exists('$(HOME)/.config/Vintagestory/VintagestoryAPI.dll')">
+    <VintageStoryPath>$(HOME)/.config/Vintagestory</VintageStoryPath>
+  </PropertyGroup>
+  <!-- Linux: install.sh, начиная с 1.19.2 -->
+  <PropertyGroup Condition="'$(VintageStoryPath)' == '' and '$(HOME)' != '' and Exists('$(HOME)/.local/share/vintagestory/VintagestoryAPI.dll')">
+    <VintageStoryPath>$(HOME)/.local/share/vintagestory</VintageStoryPath>
+  </PropertyGroup>
+  <!-- Linux: общесистемная установка вручную -->
+  <PropertyGroup Condition="'$(VintageStoryPath)' == '' and Exists('/usr/share/vintagestory/VintagestoryAPI.dll')">
+    <VintageStoryPath>/usr/share/vintagestory</VintageStoryPath>
+  </PropertyGroup>
+  <!-- Linux: пакет из AUR -->
+  <PropertyGroup Condition="'$(VintageStoryPath)' == '' and Exists('/opt/vintagestory/VintagestoryAPI.dll')">
+    <VintageStoryPath>/opt/vintagestory</VintageStoryPath>
+  </PropertyGroup>
+
+  <!-- macOS: игра живёт внутри бандла .app -->
+  <PropertyGroup Condition="'$(VintageStoryPath)' == '' and Exists('/Applications/Vintagestory.app/Contents/MacOS/VintagestoryAPI.dll')">
+    <VintageStoryPath>/Applications/Vintagestory.app/Contents/MacOS</VintageStoryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VintageStoryPath)' == '' and '$(HOME)' != '' and Exists('$(HOME)/Applications/Vintagestory.app/Contents/MacOS/VintagestoryAPI.dll')">
+    <VintageStoryPath>$(HOME)/Applications/Vintagestory.app/Contents/MacOS</VintageStoryPath>
+  </PropertyGroup>
+
+  <!--
+    НАТИВНОЙ БИБЛИОТЕКИ СЖАТИЯ ЗДЕСЬ БОЛЬШЕ НЕТ — И ЭТО НАРОЧНО.
+
+    Раньше сборка клала рядом с ботом Lib/libzstd для ЦЕЛЕВОЙ системы, и взять
+    её было можно только из установки игры под эту же систему. Отсюда шла вся
+    боль кросс-сборки: с Windows-машины нечем было собрать архив для Linux и
+    macOS, а один раз сборка молча положила windows-DLL в linux-архив.
+
+    Разбор игровых сборок показал, что это лишнее. Игра ищет библиотеку в
+    <папке ЗАПУЩЕННОЙ ПРОГРАММЫ>/Lib — то есть на машине, ГДЕ БОТ РАБОТАЕТ. А
+    там игра обязана стоять в любом случае (иначе неоткуда взять её .dll), и в
+    её папке Lib лежит библиотека ровно нужной системы. Поэтому бот берёт её
+    сам при первом запуске: см. VsBotKit/GameNatives.cs — там же выписан
+    разобранный порядок поиска игрового резолвера.
+
+    Следствие: сборка под любую систему делается с любой машины и ничего
+    целевого не требует.
+  -->
+
+  <!--
+    ЧЕСТНЫЙ ОТКАЗ ВМЕСТО СТА ОШИБОК КОМПИЛЯТОРА.
+
+    Проекту, которому нужны игровые сборки, важно сказать ОДНУ понятную вещь:
+    игры нет и вот как это поправить. Иначе человек читает «CS0246: не найден
+    тип Packet_Client» и ищет ошибку в своём коде.
+  -->
+  <Target Name="ПроверитьЧтоИграНайдена" BeforeTargets="ResolveAssemblyReferences"
+          Condition="'$(NeedsGame)' == 'true' and ('$(VintageStoryPath)' == '' or !Exists('$(VintageStoryPath)/VintagestoryAPI.dll'))">
+    <Error Text="Не найдена установленная Vintage Story: без её сборок бот не собрать.&#10;Укажите папку игры (ту, где лежит VintagestoryAPI.dll) любым способом:&#10;  переменной окружения:  VINTAGE_STORY=/путь/к/игре&#10;  или при сборке:        dotnet build -p:VintageStoryPath=/путь/к/игре&#10;Обычные места: Windows — %25APPDATA%25\Vintagestory; Linux — ~/.config/Vintagestory, ~/.local/share/vintagestory, /usr/share/vintagestory; macOS — /Applications/Vintagestory.app/Contents/MacOS.&#10;Сейчас проверено: '$(VintageStoryPath)'" />
+  </Target>
+
+</Project>

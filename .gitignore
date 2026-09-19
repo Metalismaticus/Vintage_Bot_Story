@@ -1,0 +1,30 @@
+# Сборка — восстанавливается одной командой, в снимок не идёт
+bin/
+obj/
+out/
+TestResults/
+
+# Хозяйство бота: настройки, сессия, журналы, иконки, миры.
+# Это ДАННЫЕ заказчика, а не исходники. Их снимок делается отдельно.
+*.log
+logs/
+icons/
+botsession.json
+# КЛЮЧ НЕЙРОСЕТИ. Лежит в папке состояния бота рядом с bot.json и
+# botsession.json, пишется окном управления и НЕ ЗАШИФРОВАН. Это единственный
+# файл здесь, за который платят деньгами: попади он в снимок — ключ уедет
+# вместе с исходниками и его придётся отзывать. Соседи по этому списку
+# закрыты именно ради этого, а он приехал позже них и остался открытым
+botsecrets.json
+bot.json
+botjobs.json
+botmeetings.json
+bottranslocators.json
+presets-мои/
+blueprints/
+records/
+TestServer/Saves/
+TestServer/Backups/
+TestServer/BackupSaves/
+TestServer/Cache/
+TestServer/Logs/

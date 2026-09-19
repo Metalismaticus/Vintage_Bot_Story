@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Description>Библиотека для создания headless-ботов Vintage Story</Description>
+    <!-- ОБЪЯСНЕНИЯ НАСТРОЕК В ОКНЕ УПРАВЛЕНИЯ. Панель ищет док-строку в той
+         сборке, где свойство ОБЪЯВЛЕНО, а четырнадцать общих ручек (Дом,
+         ФонарьВРуке, МахатьИгрокам, БезДела, КомандыИзЧата и прочие) объявлены
+         здесь, в LivingRole. Без этого файла они остались бы без подписи у ВСЕХ
+         ролей-наследников — и молча -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+    <!-- Где стоит игра, считает Directory.Build.props в корне: один ответ на
+         все проекты и на все три системы. Здесь только говорим, что нам нужны
+         её сборки. Нативную библиотеку сжатия сборка НЕ трогает: её берёт при
+         запуске сам бот из установленной игры — см. GameNatives.cs -->
+    <NeedsGame>true</NeedsGame>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(VintageStoryPath)/VintagestoryAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VintagestoryLib">
+      <HintPath>$(VintageStoryPath)/VintagestoryLib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>$(VintageStoryPath)/Lib/protobuf-net.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(VintageStoryPath)/Lib/Newtonsoft.Json.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- Мод выживания игры: оттуда берутся типы данных, которые сервер шлёт
+         клиенту по своим каналам (например, состояние временных бурь) -->
+    <Reference Include="VSSurvivalMod">
+      <HintPath>$(VintageStoryPath)/Mods/VSSurvivalMod.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Страница окна управления вшивается ВНУТРЬ сборки: панель должна
+         работать и когда бота скопировали одним файлом, и без выхода в сеть -->
+    <EmbeddedResource Include="Panel/panel.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Anthropic" Version="12.39.0" />
+  </ItemGroup>
+
+</Project>
