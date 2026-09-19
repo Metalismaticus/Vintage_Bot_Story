@@ -1,42 +1,57 @@
 # Vintage Bot Story
 
-Безголовый бот для Vintage Story 1.22.7: программа входит на сервер как обычный
-игрок и живёт в мире по правилам игрока — ходит, копает, строит, ест, спит,
-отбивается, торгует. Физику тела считает кодом самой игры; ничего, чего не может
-живой игрок, бот не делает.
+A headless bot for Vintage Story 1.22.7. It joins a server as an ordinary player
+and lives in the world by a player's rules — walks, digs, builds, eats, sleeps,
+fights back, trades. Body physics is computed by the game's own code; the bot
+does nothing a live player could not do.
 
-- **Как запустить, настроить и чем управлять — [ЗАПУСК.md](ЗАПУСК.md).**
-- Как подключить нейросеть или отдать тело бота внешней модели по MCP —
-  [ИИ.md](ИИ.md).
-- Готовые боты — папка `presets/`: выживальщик (`digger`, `quarry-only`,
-  `resident`), продавец (`trader`), стражник (`guard`), продавец на нейросети
-  (`ai`).
+- **How to run, configure and control it — [GUIDE.md](GUIDE.md)** (English) ·
+  [ЗАПУСК.md](ЗАПУСК.md) (Russian original, more detail).
+- Connecting a language model, or handing the bot's body to an external model
+  over MCP — [ИИ.md](ИИ.md) (Russian).
+- Ready-made bots — the `presets/` folder: survivor (`digger`, `quarry-only`,
+  `resident`), trader (`trader`), guard (`guard`), AI trader (`ai`).
 
-## Собрать самому
+## Run
 
-Нужны .NET 10 SDK и установленная Vintage Story: бот берёт из неё игровые сборки.
-Игру ищет сам в обычных местах установки; если она в необычном —
-`-p:VintageStoryPath=/путь/к/игре` или переменная `VINTAGE_STORY`.
+You need **Vintage Story installed** — the bot takes the game's assemblies,
+block registry and compression library from it. Then either:
+
+- **the published single file** for your system (`VintageBotStory.exe` on Windows,
+  `VintageBotStory` on Linux/macOS) — double-click, no .NET and no batch files
+  required; the control panel opens in your browser; or
+- **from source** with .NET 10 SDK:
 
 ```bash
 dotnet build VsBotKit.slnx
-dotnet run --project VintageBotStory        # откроет окно управления в браузере
-./publish.sh                                # один самодостаточный файл на каждую систему, в out/
+dotnet run --project VintageBotStory        # opens the control panel in the browser
+./publish.sh                                # one self-contained file per system, in out/
 ```
 
-Здесь лежит только то, что нужно для сборки и запуска. Стенды, тестовый сервер и
-рабочие документы проекта в этот репозиторий не выгружаются.
+Running with no arguments equals `--panel`; the `start-bot*.bat` / `.sh` files
+are only shortcuts for the same commands. If the game is installed in an unusual
+place: `-p:VintageStoryPath=/path/to/game` when building, or the `VINTAGE_STORY`
+environment variable at run time.
 
-## Лицензия
+This repository holds only what is needed to build and run. The test suite, the
+test server and the project's working documents are not published here.
 
-Код открыт для чтения и **бесплатен для личного, некоммерческого использования**:
-поставить бота себе, играть с ним, изучать и менять для себя — можно
+## License
+
+Source is open to read and **free for personal, non-commercial use**: install the
+bot for yourself, play with it, study and modify it for yourself
 ([LICENSE](LICENSE), PolyForm Noncommercial 1.0.0).
 
-**Любое коммерческое использование запрещено без письменного соглашения с
-автором**: встраивание в игру, мод или продукт, продажа, платные услуги и
-сервисы на основе этого кода, использование в компании. Хотите такое — напишите
-правообладателю: https://github.com/Metalismaticus.
+**Any commercial use is prohibited without a written agreement with the
+author**: embedding into a game, mod or product, selling, paid services built on
+this code, use inside a company. For that, contact the copyright holder:
+https://github.com/Metalismaticus.
 
-Copyright © 2026 Metalismaticus. Все права защищены, кроме прямо разрешённых
-лицензией.
+Copyright © 2026 Metalismaticus. All rights reserved except those expressly
+granted by the license.
+
+---
+
+По-русски: запуск и настройка — [ЗАПУСК.md](ЗАПУСК.md); нейросеть и MCP —
+[ИИ.md](ИИ.md). Код бесплатен для личного некоммерческого использования; любое
+коммерческое — только по письменному соглашению с автором.
